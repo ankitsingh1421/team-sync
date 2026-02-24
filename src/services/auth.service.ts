@@ -81,7 +81,8 @@ export const registerUserService = async (body: {
   name: string;
   password: string;
 }) => {
-  const { email, name, password } = body;
+  const { name, password } = body;
+  const email = body.email.trim().toLowerCase();
   const session = await mongoose.startSession();
 
   try {
@@ -146,7 +147,11 @@ export const verifyUserService = async ({
   password: string;
   provider?: string;
 }) => {
-  const account = await AccountModel.findOne({ provider, providerId: email });
+  const normalizedEmail = email.trim().toLowerCase();
+  const account = await AccountModel.findOne({
+    provider,
+    providerId: normalizedEmail,
+  });
   if (!account) {
     throw new NotFoundException("Invalid email or password");
   }

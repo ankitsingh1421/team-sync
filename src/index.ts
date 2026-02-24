@@ -22,6 +22,13 @@ import taskRoutes from "./routes/task.route";
 
 const app = express();
 const BASE_PATH = config.BASE_PATH;
+const isProduction = config.NODE_ENV === "production";
+
+if (isProduction) {
+  // Required when app is behind a reverse proxy (Render, Railway, etc.)
+  // so secure cookies can be set on HTTPS requests.
+  app.set("trust proxy", 1);
+}
 
 app.use(express.json());
 
@@ -32,9 +39,9 @@ app.use(
     name: "session",
     keys: [config.SESSION_SECRET],
     maxAge: 24 * 60 * 60 * 1000,
-    secure: config.NODE_ENV === "production",
+    secure: isProduction,
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: isProduction ? "none" : "lax",
   })
 );
 

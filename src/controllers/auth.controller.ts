@@ -48,7 +48,7 @@ export const loginController = asyncHandler(
         if (err) {
           return next(err);
         }
-
+          console.log("user ",user);
         if (!user) {
           return res.status(HTTPSTATUS.UNAUTHORIZED).json({
             message: info?.message || "Invalid email or password",
